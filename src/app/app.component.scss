@@ -1,0 +1,18 @@
+.box {
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
+}
+
+.row {
+    width: 100%;
+}
+
+.elem{
+    height: 100%;
+    float: left;
+}
+
+.dark {
+    filter: brightness(90%);
+}

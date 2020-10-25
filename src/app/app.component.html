@@ -1,0 +1,6 @@
+<div #box class="box" *ngIf="cells">
+  <div class="row" *ngFor="let row of cells; let y = index" [style.height]="getSize()">
+    <div class="elem" *ngFor="let cell of row; let x = index" [class.dark]="((x+y) % 2) == 0" [style.backgroundColor]="getColor(cell)" [style.width]="getSize()"></div>
+  </div>
+</div>
+<router-outlet></router-outlet>
