@@ -1,6 +1,9 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { webSocket } from 'rxjs/webSocket';
 import { API_KEY } from '../API_KEY';
+import { HttpClient } from '@angular/common/http';
+import { HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 interface SpeedAnswer {
   action: SpeedAction;
@@ -45,18 +48,17 @@ interface SpeedData {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor() {
-    let ws = webSocket('wss://msoll.de/spe_ed?key=' + API_KEY.key);
-    //let ws = webSocket('ws://localhost:8081');
+  constructor(private http: HttpClient) {
+    //let ws = webSocket('wss://msoll.de/spe_ed?key=' + API_KEY.key);
+    let ws = webSocket('ws://localhost:8081');
     ws.subscribe(
       (data: SpeedData) => {
+        http.post('/agent', data).subscribe((resp) => {
+          ws.next(resp);
+        });
         this.data = data;
         this.player = data.players[data.you];
         this.cells = data.cells;
-        let answer: SpeedAnswer = {
-          action: SpeedAction.NOTHING
-        };
-        ws.next(answer);
       },
       err => console.log(err),
       () => console.log('complete')
@@ -65,7 +67,7 @@ export class AppComponent {
   data: SpeedData;
   cells: number[][];
   player: SpeedPlayer;
-  
+
   getSize() {
     return 'min(calc(100vw / ' + this.data.width + '), calc(100vh / ' + this.data.height + '))';
   }

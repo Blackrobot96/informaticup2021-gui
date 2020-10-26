@@ -1,0 +1,8 @@
+{
+    "/agent": {
+      "target": "http://localhost:7070",
+      "pathRewrite": {"^/agent" : ""},
+      "logLevel": "error",
+      "secure": false
+    }
+}
