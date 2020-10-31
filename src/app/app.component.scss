@@ -1,4 +1,14 @@
+.content {
+    display: grid;
+    grid-template-columns: auto 200px;
+    grid-template-rows: 100%;
+    justify-content: stretch;
+    align-items: stretch;
+    grid-template-areas: "game menu";
+}
+
 .box {
+    grid-area: game;
     margin: auto;
     width: fit-content;
     height: fit-content;
@@ -15,4 +25,8 @@
 
 .dark {
     filter: brightness(90%);
+}
+
+p-panel {
+    grid-area: menu;
 }

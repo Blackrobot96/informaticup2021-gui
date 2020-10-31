@@ -1,6 +1,13 @@
-<div #box class="box" *ngIf="cells">
-  <div class="row" *ngFor="let row of cells; let y = index" [style.height]="getSize()">
-    <div class="elem" *ngFor="let cell of row; let x = index" [class.dark]="((x+y) % 2) == 0" [style.backgroundColor]="getColor(cell)" [style.width]="getSize()"></div>
+<div class="content">
+  <div #box class="box" *ngIf="cells">
+    <div class="row" *ngFor="let row of cells; let y = index" [style.height]="getSize()">
+      <div class="elem" *ngFor="let cell of row; let x = index" [class.dark]="((x+y) % 2) == 0"
+        [style.backgroundColor]="getColor(cell)" [style.width]="getSize()"></div>
+    </div>
   </div>
+  <p-panel header="Menu">
+    <p-slider *ngIf="gameData" [(ngModel)]="currentRound" [min]="0" [max]="gameData.length - 1" (onChange)="handleChange($event)"></p-slider>
+    <button (click)="play()">Play</button>
+  </p-panel>
 </div>
 <router-outlet></router-outlet>
