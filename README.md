@@ -1,12 +1,7 @@
 # Gui
 
 ## Installation
-Run `npm install` in the folder. Add api key `/src/API_KEY.ts`:
-```typescript
-export const API_KEY = {
-    key: ""
-};
-```
+Run `npm install` in the folder.
 
 ## Development server
 
