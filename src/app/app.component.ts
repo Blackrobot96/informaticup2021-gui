@@ -1,9 +1,11 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { webSocket } from 'rxjs/webSocket';
-import { API_KEY } from '../API_KEY';
+import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HttpParams, HttpHeaders } from '@angular/common/http';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { getLocaleFirstDayOfWeek, registerLocaleData } from '@angular/common';
+
+interface SelectItem {
+  label: string;
+  value: string;
+}
 
 interface SpeedAnswer {
   action: SpeedAction;
@@ -25,6 +27,7 @@ enum SpeedDirection {
 }
 
 interface SpeedPlayer {
+  number: number;
   x: number;
   y: number;
   direction: SpeedDirection;
@@ -49,27 +52,19 @@ interface SpeedData {
 })
 export class AppComponent {
   constructor(private http: HttpClient) {
-    //let ws = webSocket('wss://msoll.de/spe_ed?key=' + API_KEY.key);
-    let ws = webSocket('ws://localhost:8081');
-    ws.subscribe(
-      (data: SpeedData) => {
-        http.post('/agent', data).subscribe((resp) => {
-          ws.next(resp);
-        });
-        this.data = data;
-        this.player = data.players[data.you];
-        this.cells = data.cells;
-      },
-      err => console.log(err),
-      () => console.log('complete')
-    );
+    //this.getAvailableLogFiles();
   }
+  logFiles: SelectItem[];
+  gameData: SpeedData[];
   data: SpeedData;
   cells: number[][];
-  player: SpeedPlayer;
+  isPlaying: boolean = false;
+
+  players: SpeedPlayer[];
+  currentRound = 0;
 
   getSize() {
-    return 'min(calc(100vw / ' + this.data.width + '), calc(100vh / ' + this.data.height + '))';
+    return 'min(calc(calc(100vw - 400px) / ' + this.data.width + '), calc(100vh / ' + this.data.height + '))';
   }
 
   getColor(cell) {
@@ -84,5 +79,75 @@ export class AppComponent {
       case 8: return "orangered";
       default: return "white";
     }
+  }
+  ahhh(asd) {
+    console.log(asd)
+  }
+
+  async play() {
+    this.isPlaying = true;
+    for (let i = this.currentRound; i < this.gameData.length; i++) {
+      this.currentRound = i;
+      this.handleChange();
+      await this.delay(200);
+      if (!this.isPlaying)
+        return;
+    }
+    this.isPlaying = false;
+  }
+
+  step(dir) {
+    this.currentRound += dir;
+    this.handleChange()
+  }
+
+  delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  handleChange() {
+    this.data = this.gameData[this.currentRound];
+    this.cells = this.gameData[this.currentRound].cells;
+
+    let play = this.gameData[this.currentRound].players;
+    let arrPlayer = [];
+    for (let key in play) {
+      let p = play[key]
+      p.number = Number.parseInt(key);
+      arrPlayer.push(p);
+    }
+    this.players = arrPlayer;
+  }
+  dropHandler(ev) {
+    // Prevent default behavior (Prevent file from being opened)
+    ev.preventDefault();
+
+    if (ev.dataTransfer.items) {
+      // Use DataTransferItemList interface to access the file(s)
+      for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+        // If dropped items aren't files, reject them
+        if (ev.dataTransfer.items[i].kind === 'file') {
+          let file: File = ev.dataTransfer.items[i].getAsFile();
+          if (file.type.match('application/json')) {
+            const reader = new FileReader();
+            reader.addEventListener('load', (event) => {
+              this.gameData = JSON.parse(<string>event.target.result).game;
+            });
+            reader.readAsText(file);
+            console.log('... file[' + i + '].name = ' + file.name);
+          }
+        }
+      }
+    } else {
+      // Use DataTransfer interface to access the file(s)
+      for (var i = 0; i < ev.dataTransfer.files.length; i++) {
+        console.log('... file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
+      }
+    }
+  }
+
+  dragOverHandler(ev) {
+    // Prevent default behavior (Prevent file from being opened)
+    ev.preventDefault();
   }
 }

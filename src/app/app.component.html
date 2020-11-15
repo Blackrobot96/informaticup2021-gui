@@ -1,6 +1,47 @@
-<div #box class="box" *ngIf="cells">
-  <div class="row" *ngFor="let row of cells; let y = index" [style.height]="getSize()">
-    <div class="elem" *ngFor="let cell of row; let x = index" [class.dark]="((x+y) % 2) == 0" [style.backgroundColor]="getColor(cell)" [style.width]="getSize()"></div>
+<div class="content">
+  <div #box class="box" *ngIf="cells">
+    <div class="row" *ngFor="let row of cells; let y = index" [style.height]="getSize()">
+      <div class="elem" *ngFor="let cell of row; let x = index" [class.dark]="((x+y) % 2) == 0"
+        [style.backgroundColor]="getColor(cell)" [style.width]="getSize()"></div>
+    </div>
   </div>
+
+  <div class="menu">
+    <h2>Menu</h2>
+    <fieldset>
+      <legend>Select a game:</legend>
+      <div class="dropZone" (drop)="dropHandler($event);" (dragover)="dragOverHandler($event);">
+        <p>Drag one file to this Drop Zone ...</p>
+      </div>
+    </fieldset>
+    <fieldset *ngIf="gameData">
+      <legend>Game state:</legend>
+      Current Round:
+      <input type="range" [(ngModel)]="currentRound" [min]="0" [max]="gameData.length - 1" class="slider" (change)="handleChange()">
+      <button style="width: 10%;" (click)="step(-1)" [disabled]="currentRound <= 0"><</button>
+      <button *ngIf="!isPlaying" style="width: 80%;" (click)="play()">Play</button>
+      <button *ngIf="isPlaying" style="width: 80%;" (click)="isPlaying=false">Pause</button>
+      <button style="width: 10%;" (click)="step(1)" [disabled]="currentRound >= gameData.length - 1">></button>
+    </fieldset>
+    <fieldset *ngIf="gameData">
+      <legend>Player state:</legend>
+      <div *ngFor="let player of players">
+      <div class="playerIcon" [style.backgroundColor]="getColor(player.number)"> </div>
+        X:{{player.x}} Y:{{player.y}} Direction:{{player.direction}} Speed:{{player.speed}} Active:{{player.active}}
+      </div>
+    </fieldset>
+  </div>
+
+  <!--<p-panel header="Menu"> X:{{player.x}} Y:{{player.y}} Direction:{{player.direction}} Speed:{{player.speed}} Active:{{player.active}}
+    <div class="p-inputgroup">
+      <button (click)="getAvailableLogFiles()" type="button" pButton pRipple icon="pi pi-refresh" styleClass="p-button-warn"></button>
+      <span class="p-fluid">
+      <p-dropdown [options]="logFiles" [(ngModel)]="selectedLogFile" (onChange)=getSelctedLogFile($event)></p-dropdown>
+      </span>
+    </div>
+    <p-slider *ngIf="gameData" [(ngModel)]="currentRound" [min]="0" [max]="gameData.length - 1"
+      (onChange)="handleChange($event)"></p-slider>
+    <button (click)="play()">Play</button>
+  </p-panel>-->
 </div>
 <router-outlet></router-outlet>

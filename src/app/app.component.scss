@@ -1,4 +1,16 @@
+.content {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: auto 400px;
+    grid-template-rows: 100%;
+    justify-content: stretch;
+    align-items: stretch;
+    grid-template-areas: "game menu";
+}
+
 .box {
+    grid-area: game;
     margin: auto;
     width: fit-content;
     height: fit-content;
@@ -15,4 +27,31 @@
 
 .dark {
     filter: brightness(90%);
+}
+
+.menu {
+    grid-area: menu;
+    background-color: #FFF;
+    padding: 20px;
+}
+
+.slider {
+    width: 100%;
+}
+
+.menu button {
+    width: 100%;
+}
+
+.fileDropDown {
+    width: 100%;
+}
+
+.dropZone {
+    width: 100%;
+    height: 50px;
+}
+
+.playerIcon {
+    height: 15px;
 }
