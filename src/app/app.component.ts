@@ -42,6 +42,7 @@ interface SpeedData {
   players: { [key: number]: SpeedPlayer };
   you: number;
   running: boolean;
+  yourgoal: number[];
   deadline: string;
 }
 
@@ -77,6 +78,7 @@ export class AppComponent {
       case 6: return "brown";
       case 7: return "magenta";
       case 8: return "orangered";
+      case -11: return "fuchsia";
       default: return "white";
     }
   }
@@ -112,7 +114,12 @@ export class AppComponent {
   handleChange() {
     this.data = this.gameData[this.currentRound];
     this.cells = this.gameData[this.currentRound].cells;
-
+    if (this.data.yourgoal != null && this.data.yourgoal.length > 0)
+    {
+      var goalx = this.data.yourgoal[0];
+      var goaly = this.data.yourgoal[1];
+      this.cells[goalx][goaly] = -11;
+    }
     let play = this.gameData[this.currentRound].players;
     let arrPlayer = [];
     for (let key in play) {
