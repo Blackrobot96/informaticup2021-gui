@@ -80,14 +80,11 @@ export class AppComponent {
       default: return "white";
     }
   }
-  ahhh(asd) {
-    console.log(asd)
-  }
 
   async play() {
     this.isPlaying = true;
-    for (let i = this.currentRound; i < this.gameData.length; i++) {
-      this.currentRound = i;
+    while (this.currentRound < this.gameData.length) {
+      this.currentRound = this.currentRound +1;
       this.handleChange();
       await this.delay(200);
       if (!this.isPlaying)
@@ -105,6 +102,13 @@ export class AppComponent {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  isYou(player: SpeedPlayer) {
+    if (this.gameData && this.gameData[0])
+      return this.gameData[0].you == player.number;
+    else
+      return false;
+  }
+
   handleChange() {
     this.data = this.gameData[this.currentRound];
     this.cells = this.gameData[this.currentRound].cells;
@@ -118,6 +122,7 @@ export class AppComponent {
     }
     this.players = arrPlayer;
   }
+  
   dropHandler(ev) {
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
