@@ -25,6 +25,9 @@
         X:{{player.x}} Y:{{player.y}} Direction:{{player.direction}} Speed:{{player.speed}} Active:{{player.active}}
       </div>
     </fieldset>
+    <fieldset *ngIf="data.availableActions">
+      {{data.availableActions}}
+    </fieldset>
   </div>
 </div>
 <router-outlet></router-outlet>

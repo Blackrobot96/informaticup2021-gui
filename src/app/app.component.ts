@@ -43,6 +43,7 @@ interface SpeedData {
   you: number;
   running: boolean;
   yourgoal: number[];
+  availableActions: string[];
   deadline: string;
 }
 
